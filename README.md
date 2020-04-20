@@ -188,3 +188,25 @@ This function return the remaning time of any key. If the key does not exist or 
 This function is useful for checking if server is alive. Returns PONG if server is active. 
 
 ---
+
+## Questions
+
+#### 1. Why python language has been used?
+Ans: Python has support for various inbuilt functionalities and data structures that makes development very logic focused. Also it has vvaious modules available like Flask which help in making development very fast. And since the given time was very less, Python language was the obvious candidate.
+
+#### 2. What are the further improvements that can be made?
+Ans: Various improvements can be done in this prototype. Some improvements that was planned by me but was not implemented due to lack of time are as follow:-
+- Log Query Optimisation: Combining the queries present in log file for faster load during startup
+- Threading: Writing in file can be done parallely with main thread 
+- Snapshotting: Saving the actual database when log files gets too big or on request of user
+
+#### 3. What Data Structures have been used and Why?
+Ans: Various data structures have been used in this prototype. They are as follows:-
+- Dictionary(Hashtable/Unordered Map): This holds the main DatBase, expire table
+- Red Black Tree: For implementing Sorted Set Data Strucutre. It is used as a Balanced BST
+- Tuples: For storing (score, value) pair whoch acts as node for RB Tree
+- Arrays: Temporary intermediate Calculation and Input
+
+#### 4. Does your implementation support multi threaded operations?
+Ans: Currently it does not support Multi threading due to lack of time. But the prototype can be multi threaded.One place where it can multithreaded is while writing into the log files. Since this operation is an I/O operation and is also independent of other parts of the program it can be multi threaded. Multithreading can also be used in snapshotting. Snapshotting is saving the state of the DB into the hard drive. A third thread can be used in log query optimisation in the background. 
+
