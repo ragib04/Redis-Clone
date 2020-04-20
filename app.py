@@ -60,6 +60,11 @@ def redis_process(curr_time, command):
             response = redis_obj.ZRANK(curr_time, *command[1:])
         except InvalidDataType:
             response = "Only sets can be queried for Zrank"
+    elif command[0].lower() == 'zrevrank':
+        try:
+            response = redis_obj.ZREVRANK(curr_time, *command[1:])
+        except InvalidDataType:
+            response = "Only sets can be queried for ZRevRank"
     elif command[0].lower() == 'zrange':
         try:
             response = redis_obj.ZRANGE(curr_time, *command[1:])
@@ -69,8 +74,21 @@ def redis_process(curr_time, command):
             response = "Invalid format"
         except InvalidDataType:
             response = "Only sets can be queries for ZRange"
+    elif command[0].lower() == 'zrevange':
+        try:
+            response = redis_obj.ZREVRANGE(curr_time, *command[1:])
+        except SyntaxError:
+            response = "Syntax Error in Command"
+        except InvalidFormat:
+            response = "Invalid format"
+        except InvalidDataType:
+            response = "Only sets can be queries for ZREVRange"
     elif command[0].lower() == 'del':
         response = redis_obj.DELETE(curr_time, *command[1:])
+    elif command[0].lower() == 'ttl':
+        response = redis_obj.TTL(curr_time, *command[1:])
+    elif command[0].lower() == 'ping':
+        response = redis_obj.ping()
     else:
         response = f'ERR Unknown or disabled command "{command[0]}"'
     return response
@@ -103,4 +121,4 @@ def current():
 
 
 if __name__ == '__main__':
-    app.run(host= '0.0.0.0', port=5000, debug=True, threaded=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=5000, threaded=True, use_reloader=False)

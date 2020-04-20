@@ -6,4 +6,6 @@ s.add((1990, 'Mike'))
 s.add((1990, 'Kate'))
 s.add((1990, 'ABC'))
 
-print(type(s) == int)
+print(s)
+s = s[::-1]
+print(s)

@@ -2,6 +2,7 @@ import time
 from sortedcontainers import SortedSet
 from .exception import *
 import traceback
+import random
 
 class Redis:
     def __init__(self):
@@ -65,6 +66,15 @@ class Redis:
         else:
             return False
 
+    def auto_clean_util(self, curr_time):
+        count = 0
+        while count < 10 and len(self.hash_table) > 100:
+            sample = random.sample(self.hash_table.keys(), 10)
+            for key in sample:
+                self.destroy_util(curr_time, key)
+            count += 1
+
+
     def START(self):
         pass
 
@@ -105,8 +115,15 @@ class Redis:
         else:
             return '0'
 
-    def TTL(self, hash_key):
-        pass
+    def TTL(self, curr_time, hash_key):
+        self.destroy_util(curr_time, hash_key)
+        if hash_key in self.hash_table and self.expire[hash_key] is not None:
+            return str(time.time() - self.expire[hash_key])
+        else:
+            return str(None)
+
+    def ping(self):
+        return 'PONG'
 
     def DELETE(self, curr_time, hash_key):
         """
@@ -274,6 +291,16 @@ class Redis:
         else:
             return str(None)
 
+    def ZREVRANK(self, curr_time, hash_key, value):
+        rank = self.ZRANK(curr_time, hash_key, value)
+        if rank == 'None':
+            return str(None)
+        else:
+            rank = int(rank)
+            rev_rank = len(hash_key[value]) - rank - 1
+            return str(rev_rank)
+
+
     def ZRANGE(self, curr_time, hash_key, start_index, end_index, *args):
         self.destroy_util(curr_time, hash_key)
         if hash_key in self.hash_table:
@@ -296,6 +323,45 @@ class Redis:
                         s = ', '.join(ans)
                     elif len(args) == 0:
                         for i in range(int(start_index), int(end_index) + 1):
+                            ans.append(ss[i][1])
+                            # for a in ans:
+                            #     s += str(a) + ", "
+                        s = ', '.join(ans)
+                    else:
+                        raise SyntaxError('SyntaxError')
+                    return s
+                else:
+                    raise InvalidFormat('WrongFormat')
+            else:
+                raise InvalidDataType('WrongDataType')
+        else:
+            return str(None)
+
+    def ZREVRANGE(self, curr_time, hash_key, start_index, end_index, *args):
+        self.destroy_util(curr_time, hash_key)
+        if hash_key in self.hash_table:
+            ss = self.hash_table[hash_key]
+            if type(ss) == SortedSet:
+                if int(start_index) < 0:
+                    temp = abs(int(start_index))
+                    start_index = len(ss) - temp
+                if int(end_index) < 0:
+                    temp = abs(int(end_index))
+                    end_index = len(ss) - temp
+                if int(start_index) <= int(end_index) <= len(ss) - 1:
+                    ans = []
+                    s = ''
+                    n = len(ss)
+                    start, stop = n - int(start_index) - 1, n - int(end_index) - 1
+                    if len(args) == 1 and args[0].lower() == 'withscores':
+
+                        for i in range(start, stop - 1, -1):
+                            ans.append(' '.join(map(str, ss[i])))
+                            # for a, b in ans:
+                            #     s += str(a) + " " + str(b) + ", "
+                        s = ', '.join(ans)
+                    elif len(args) == 0:
+                        for i in range(start, stop - 1, -1):
                             ans.append(ss[i][1])
                             # for a in ans:
                             #     s += str(a) + ", "
