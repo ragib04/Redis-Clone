@@ -1,6 +1,6 @@
  ![enter image description here](https://img.shields.io/badge/python-3.8-blue.svg)
 # Redis-Clone
-This is a prototype for Redis with some basic functionalities. Itan be used like any REST API. 
+This is a prototype for Redis with some basic functionalities. It can be used like any REST API. 
 ### Table of Contents
 ---
  <details>
@@ -26,8 +26,8 @@ This is a prototype for Redis with some basic functionalities. Itan be used like
  
 ### Usage
 ---
- To use the app the dependency mentioned in the requirements.txt must be satisfed. 
-Once the dependency has been satisfied app.py can directly be executed via any CLI. 
+ To use the app the dependencies mentioned in the requirements.txt must be satisfed. 
+Once the dependencies have been satisfied, app.py can directly be executed via any CLI. 
 
     python3 app.py
 The server will then be live on [http://localhost:5000/](http://localhost:5000/)
@@ -37,7 +37,7 @@ The server will then be live on [http://localhost:5000/](http://localhost:5000/)
 This prototype is an attempt to give Redis like functionalities. 11 different Redis functions have been implemented in this prototype. The most difficult part in this prototype was to attain persistence. 
 #### Persistence
 ---
-This was a major problem that aroused during the development of the project. This problem is solved in a very Novel way in this prototype. 
+This was a major problem that arose during the development of the project. This problem is solved in a very novel way in this prototype. 
 This problem is solved by logging. Here is the algorithm that was used to solve this problem:
 
 1. A local txt file is created that will log all the queries that can alter the database(Ex: SET, DELETE, EXPIRE). A snapshot of a log file is shown below. 
@@ -52,7 +52,7 @@ Another method called Snapshotting is also used by Redis on demand of the user. 
 Logging has some disadvantages which is discussed in Questions section
 
 
-### **Function Implemented**
+### **Functions Implemented**
 ---
 ### 1. GET()
 
@@ -84,15 +84,15 @@ This function is used to insert value with given key. If key is already holding 
 
 ##### Time Complexity: O(1)
 
-This can be used to add timeout on any key irrespective of the value it is holding. this is also used as a special mode in SET as discussed above. the algorithm used for expiring is as follows :-
+This can be used to add timeout on any key irrespective of the value it is holding. This is also used as a special mode in SET as discussed above. The algorithm used for expiring is as follows :-
 
- 1. Whenever SET was used to insert any value in the DataBase any entry in 'expire' table was also created with the same key. The value to this was initialised as Inifinite.
+ 1. Whenever SET was used to insert any value in the DataBase any entry in 'expire' table was also created with the same key. The value to this was initialised as infinite.
  2. Now when we give an expiration time for any key, the value in this 'expire' table is set as current time + expiration time.
  3. Now when we call a GET method for any key, it is first checked whether the key has already expired by just comparing current time with expiration time of the key. if it is expired then it is deleted otherwise returned.
 
 This technique is called lazy deletion.
 Although this technique works well but there is an issue of increasing size of our Database. Because we are only deleting an expired when it called via GET. if any expired key is not called for a long time it may reside in our database thus increasing the size of our database. 
-To limit the increasing size of the database what Redis does is it randomly selects keys and checks if it has expired. A similar random algorithm has been implemented to control the increasing size of the DataBase. this check only happens when the keys in our hash table > 100. 
+To limit the increasing size of the database what Redis does is it randomly selects keys and checks if it has expired. A similar random algorithm has been implemented to control the increasing size of the DataBase. This check only happens when the keys in our hash table > 100. 
 
 ---
 ### 4. ZADD()
@@ -105,7 +105,7 @@ To limit the increasing size of the database what Redis does is it randomly sele
 
 Adds all the specified members with the specified scores to the sorted set stored at key. It is possible to specify multiple score / member pairs. If a specified member is already a member of the sorted set, the score is updated and the element reinserted at the right position to ensure the correct ordering.
 
-If key does not exist, a new sorted set with the specified members as sole members is created. If the key exists but does not hold a sorted set, an error is returned. 
+If key does not exist, a new sorted set with the specified members as the sole member is created. If the key exists but does not hold a sorted set, an error is returned. 
 
 ---
 ### 5. ZRANGE()
@@ -192,21 +192,21 @@ This function is useful for checking if server is alive. Returns PONG if server 
 ## Questions
 
 #### 1. Why python language has been used?
-Ans: Python has support for various inbuilt functionalities and data structures that makes development very logic focused. Also it has vvaious modules available like Flask which help in making development very fast. And since the given time was very less, Python language was the obvious candidate.
+Ans: Python has support for various inbuilt functionalities and data structures that makes the development very logic focused. Also it has various modules available like Flask which help in making development very fast. And since the given time was very less, Python language was the obvious candidate.
 
 #### 2. What are the further improvements that can be made?
-Ans: Various improvements can be done in this prototype. Some improvements that was planned by me but was not implemented due to lack of time are as follow:-
+Ans: Various improvements can be done in this prototype. Some improvements that was planned by me but was not implemented due to lack of time are as follows:-
 - Log Query Optimisation: Combining the queries present in log file for faster load during startup
 - Threading: Writing in file can be done parallely with main thread 
 - Snapshotting: Saving the actual database when log files gets too big or on request of user
 
 #### 3. What Data Structures have been used and Why?
 Ans: Various data structures have been used in this prototype. They are as follows:-
-- Dictionary(Hashtable/Unordered Map): This holds the main DatBase, expire table
+- Dictionary(Hashtable/Unordered Map): This holds the main Database, expire table
 - Red Black Tree: For implementing Sorted Set Data Strucutre. It is used as a Balanced BST
-- Tuples: For storing (score, value) pair whoch acts as node for RB Tree
+- Tuples: For storing (score, value) pair which acts as node for RB Tree
 - Arrays: Temporary intermediate Calculation and Input
 
-#### 4. Does your implementation support multi threaded operations?
-Ans: Currently it does not support Multi threading due to lack of time. But the prototype can be multi threaded.One place where it can multithreaded is while writing into the log files. Since this operation is an I/O operation and is also independent of other parts of the program it can be multi threaded. Multithreading can also be used in snapshotting. Snapshotting is saving the state of the DB into the hard drive. A third thread can be used in log query optimisation in the background. 
+#### 4. Does your implementation support multi-threaded operations?
+Ans: Currently it does not support multithreading due to lack of time. But the prototype can be multithreaded. One place where it can multithreaded is while writing into the log files. Since this operation is an I/O operation and is also independent of other parts of the program it can be multi threaded. Multithreading can also be used in snapshotting. Snapshotting is saving the state of the DB into the hard drive. A third thread can be used in log query optimisation in the background. 
 
