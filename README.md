@@ -30,7 +30,7 @@ This is a prototype for Redis with some basic functionalities. It can be used li
 Once the dependencies have been satisfied, app.py can directly be executed via any CLI. 
 
     python3 app.py
-The server will then be live on [http://localhost:5000/](http://localhost:5000/)
+The server will then be live on [http://localhost:5001/](http://localhost:5001/)
 
 ### **Overview**
 ---
@@ -42,7 +42,7 @@ This problem is solved by logging. Here is the algorithm that was used to solve 
 
 1. A local txt file is created that will log all the queries that can alter the database(Ex: SET, DELETE, EXPIRE). A snapshot of a log file is shown below. 
 
-![enter image description here](https://github.com/tcd97/Redis-Clone/blob/master/src/test/log_file.png)
+![enter image description here](https://github.com/ragib04/Redis-Clone/blob/main/log_file.png)
 
 2. Once the server is stopped then the complete database is erased(State Lost). But when the server is live again then first all the queries present in the log are executed to gain the lost state. 
 
